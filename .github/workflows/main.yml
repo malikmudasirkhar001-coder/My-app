@@ -6,14 +6,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - name: Build with Buildozer
-        uses: ArtemSerebriakov/buildozer-action@v1
+        uses: Peter-S-H/buildozer-action@v1
         with:
           buildozer_version: master
           command: android debug
+
       - name: Upload APK
         uses: actions/upload-artifact@v2
         with:
-          name: my-hacker-app
+          name: hacker-apk-file
           path: bin/*.apk
-          
