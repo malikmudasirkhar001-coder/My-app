@@ -3,16 +3,27 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
 
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        shell: bash
+
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential libffi-dev python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev
+          sudo apt install -y python3-pip
+          pip3 install --user --upgrade buildozer Cython==0.29.33
+
       - name: Build with Buildozer
-        uses: zezem/buildozer-action@v1
-        with:
-          buildozer_version: master
-          command: android debug
-          repository_display_name: GalleryHacker
+        run: |
+          yes | /home/runner/.local/bin/buildozer android debug
+        continue-on-error: false
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
